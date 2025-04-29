@@ -4,27 +4,23 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
-import java.io.IOException;
+import java.util.concurrent.Callable;
 
 
-@Command(name = "gendiff", mixinStandardHelpOptions = true,
+@Command(name = "gendiff", mixinStandardHelpOptions = true, version = "gendiff version 1.0",
         description = "Compares two configuration files and shows a difference.")
-class App implements Runnable {
+class App implements Callable<String> {
 
     @Parameters(
             index = "0",
             description = "path to first file",
-            paramLabel = "filepath1",
-            arity = "1"
-    )
+            paramLabel = "filepath1")
     private String filepath1;
 
     @Parameters(
             index = "1",
             description = "path to second file",
-            paramLabel = "filepath2",
-            arity = "1"
-    )
+            paramLabel = "filepath2")
     private String filepath2;
 
     @Option(names = {"-f", "--format"},
@@ -33,28 +29,14 @@ class App implements Runnable {
             defaultValue = "stylish")
     private String format;
 
-    @Option(names = {"-h", "--help"},
-            usageHelp = true,
-            description = "Show this @|fg(81) help|@ message and exit.")
-    private boolean help;
-
-    @Option(names = {"-V", "--version"},
-            description = "Print version information and exit.")
-    private boolean version;
-
     @Override
-    public void run() {
-        if (version) {
-            System.out.println("gendiff version 1.0");
-        }
-    }
-    public Integer call() throws IOException {
-        System.out.printf("Comparing %s with %s using format %s%n", filepath1, filepath2, format);
-        return 0;
+    public String call() throws Exception {
+        return "It works";
     }
 
-    public static void main(String... args) {
+    public static void main(String[] args) throws Exception {
         int exitCode = new CommandLine(new App()).execute(args);
         System.exit(exitCode);
+
     }
 }
