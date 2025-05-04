@@ -31,12 +31,12 @@ class App implements Callable<String> {
 
     @Override
     public String call() throws Exception {
-        return "It works";
+        System.out.println(Differ.generate(filepath1, filepath2));
+        return "";
     }
 
     public static void main(String[] args) throws Exception {
         int exitCode = new CommandLine(new App()).execute(args);
         System.exit(exitCode);
-
     }
 }
