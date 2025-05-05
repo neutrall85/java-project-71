@@ -1,6 +1,7 @@
 plugins {
     application
     checkstyle
+    id("org.sonarqube") version "6.0.1.5171"
 }
 
 group = "hexlet.code"
@@ -17,10 +18,21 @@ dependencies {
     implementation ("info.picocli:picocli:4.7.6")
     annotationProcessor ("info.picocli:picocli-codegen:4.7.6")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.0")
+    testImplementation("org.assertj:assertj-core:3.24.2")
 }
 
 tasks.test {
     useJUnitPlatform()
+}
+
+sonar {
+    properties {
+        property("sonar.projectKey", "neutrall85_java-project-71")
+        property("sonar.organization", "neutrall85")
+        property("sonar.host.url", "https://sonarcloud.io")
+    }
 }
 
 application {
