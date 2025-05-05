@@ -2,12 +2,15 @@
 run-dist:
 	./build/install/app/bin/app
 
-test:
+lint:
 	./gradlew checkstyleMain
 	./gradlew checkstyleTest
 
 build:
 	./gradlew clean
 	./gradlew installDist
+
+test:
+	./gradlew test
 
 .PHONY: build
