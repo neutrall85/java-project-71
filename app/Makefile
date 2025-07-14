@@ -1,9 +1,6 @@
 #Makefile
-run-dist:
-	./build/install/app/bin/app
-
 run:
-	make run-dist
+	./build/install/app/bin/app
 
 run-h:
 	./build/install/app/bin/app -h
@@ -24,5 +21,8 @@ build:
 
 test:
 	./gradlew test
+
+report:
+	./gradlew jacocoTestReport
 
 .PHONY: build

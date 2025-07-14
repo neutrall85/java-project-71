@@ -19,7 +19,14 @@ jobs:
       - name: Execute Gradle build
         run: make build
         working-directory: ./app
-
+	  - name: Generate coverage report
+        run: make report
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
       - name: Execute Gradle test
         run: make test
         working-directory: ./app

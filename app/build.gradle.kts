@@ -1,6 +1,10 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 plugins {
     application
     checkstyle
+    jacoco
     id("org.sonarqube") version "6.0.1.5171"
 }
 
@@ -26,6 +30,12 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+    testLogging {
+        exceptionFormat = TestExceptionFormat.FULL
+        events = mutableSetOf(TestLogEvent.FAILED, TestLogEvent.PASSED, TestLogEvent.SKIPPED)
+        // showStackTraces = true
+        // showCauses = true
+        showStandardStreams = true
 }
 
 sonar {
@@ -39,3 +49,4 @@ sonar {
 application {
     mainClass = "hexlet.code.App"
 }
+    }
