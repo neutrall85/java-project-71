@@ -1,5 +1,7 @@
 package hexlet.code;
 
+//import hexlet.code.formatter.Stylish;
+
 import static hexlet.code.Parser.getData;
 
 import java.util.Map;
@@ -13,12 +15,12 @@ public class Differ {
         Map<String, Object> firstFileData = getData(filePath1);
         Map<String, Object> secondFileData = getData(filePath2);
 
-        Set<String> allKeys = new TreeSet<>(firstFileData.keySet());
-        allKeys.addAll(secondFileData.keySet());
+        Set<String> keys = new TreeSet<>(firstFileData.keySet());
+        keys.addAll(secondFileData.keySet());
 
         StringBuilder result = new StringBuilder("{\n");
 
-        for (String key : allKeys) {
+        for (String key : keys) {
             boolean inFirst = firstFileData.containsKey(key);
             boolean inSecond = secondFileData.containsKey(key);
 
@@ -38,7 +40,6 @@ public class Differ {
                 result.append("  + ").append(key).append(": ").append(secondFileData.get(key)).append("\n");
             }
         }
-
         result.append("}");
         return result.toString();
     }
