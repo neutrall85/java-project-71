@@ -38,6 +38,8 @@ tasks.test {
         showStandardStreams = true
 }
 
+tasks.jacocoTestReport { reports { xml.required.set(true) } }
+
 sonar {
     properties {
         property("sonar.projectKey", "neutrall85_java-project-71")
