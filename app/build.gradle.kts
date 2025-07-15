@@ -37,14 +37,15 @@ tasks.jacocoTestReport {
         xml.required.set(true)
     }
 
-sonar {
-    properties {
-        property("sonar.projectKey", "neutrall85_java-project-71")
-        property("sonar.organization", "neutrall85")
-        property("sonar.host.url", "https://sonarcloud.io")
+    sonar {
+        properties {
+            property("sonar.projectKey", "neutrall85_java-project-71")
+            property("sonar.organization", "neutrall85")
+            property("sonar.host.url", "https://sonarcloud.io")
+        }
     }
-}
 
-application {
-    mainClass = "hexlet.code.App"
+    application {
+        mainClass = "hexlet.code.App"
+    }
 }
