@@ -33,7 +33,7 @@ public class App implements Callable<String> {
 
     @Override
     public String call() throws Exception {
-        System.out.println(generate(filepath1, filepath2));
+        System.out.println(generate(filepath1, filepath2, format));
         return "";
     }
 

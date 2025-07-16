@@ -13,9 +13,13 @@
 
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=neutrall85_java-project-71&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=neutrall85_java-project-71)
 
-
+### Task7
 [![asciicast](https://asciinema.org/a/gSFnOTv6ocg1czkAo0EOe7GcC.svg)](https://asciinema.org/a/gSFnOTv6ocg1czkAo0EOe7GcC)
 
+### Task8
 [![asciicast](https://asciinema.org/a/YJe4CdlSOTuVRkxv3ZMypkVLf.svg)](https://asciinema.org/a/YJe4CdlSOTuVRkxv3ZMypkVLf)
+
+### Task9
+[![asciicast](https://asciinema.org/a/9LwBvNa0R20GyC5nPfeu5ph9g.svg)](https://asciinema.org/a/9LwBvNa0R20GyC5nPfeu5ph9g)
 
 
