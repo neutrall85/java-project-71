@@ -15,7 +15,7 @@ public class Differ {
         Map<String, Object> secondFileData = getData(filePath2);
         int count = 0;
 
-        return switch(format) {
+        return switch (format) {
             case "stylish" -> Stylish.createStylish(firstFileData, secondFileData, count);
             default -> format + " is not correct! Try again";
         };
