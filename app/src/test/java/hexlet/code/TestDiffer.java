@@ -5,27 +5,27 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class TestDiffer {
 
-//    private static final String EXPECTED = """
-//            {
-//              - follow: false
-//                host: hexlet.io
-//              - proxy: 123.234.53.22
-//              - timeout: 50
-//              + timeout: 20
-//              + verbose: true
-//            }""";
+    private static final String EXPECTED = """
+            {
+              - follow: false
+                host: hexlet.io
+              - proxy: 123.234.53.22
+              - timeout: 50
+              + timeout: 20
+              + verbose: true
+            }""";
 
-    /*@Test
+    @Test
     public void testDifferJSON() throws Exception {
-        String actual = Differ.generate("file1.json", "file2.json");
+        String actual = Differ.generate("file1.json", "file2.json", "stylish");
         assertThat(actual).isEqualTo(EXPECTED);
     }
 
     @Test
     public void testDifferYML() throws Exception {
-        String actual = Differ.generate("file1.yml", "file2.yml");
+        String actual = Differ.generate("file1.yml", "file2.yml", "stylish");
         assertThat(actual).isEqualTo(EXPECTED);
-    }*/
+    }
 
 //    @Test
 //    public void testDifferYAML() throws Exception {
