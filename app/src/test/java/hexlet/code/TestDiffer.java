@@ -5,8 +5,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class TestDiffer {
 
-    private static final String PATH_FIRST_JSON = "./src/test/resources/file1.json";
-    private static final String PATH_SECOND_JSON = "./src/test/resources/file2.json";
+    private static final String PATH_FIRST_JSON = "src/test/resources/file1.json";
+    private static final String PATH_SECOND_JSON = "src/test/resources/file2.json";
+    private static final String PATH_FIRST_YML = "src/test/resources/file1.yml";
+    private static final String PATH_SECOND_YML = "src/test/resources/file2.yml";
 
 
     private static final String EXPECTED = """
@@ -20,8 +22,14 @@ public class TestDiffer {
             }""";
 
     @Test
-    public void testDifferGenerateJSON() throws Exception {
+    public void testDifferJSON() throws Exception {
         String actual = Differ.generate(PATH_FIRST_JSON, PATH_SECOND_JSON);
+        assertThat(actual).isEqualTo(EXPECTED);
+    }
+
+    @Test
+    public void testDifferYML() throws Exception {
+        String actual = Differ.generate(PATH_FIRST_YML, PATH_SECOND_YML);
         assertThat(actual).isEqualTo(EXPECTED);
     }
 }

@@ -1,7 +1,5 @@
 package hexlet.code;
 
-//import hexlet.code.formatter.Stylish;
-
 import static hexlet.code.Parser.getData;
 
 import java.util.Map;
@@ -43,4 +41,6 @@ public class Differ {
         result.append("}");
         return result.toString();
     }
+
+
 }

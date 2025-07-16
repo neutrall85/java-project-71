@@ -6,10 +6,12 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import java.util.concurrent.Callable;
 
+import static hexlet.code.Differ.generate;
+
 
 @Command(name = "gendiff", mixinStandardHelpOptions = true, version = "gendiff version 1.0",
         description = "Compares two configuration files and shows a difference.")
-class App implements Callable<String> {
+public class App implements Callable<String> {
 
     @Parameters(
             index = "0",
@@ -31,12 +33,16 @@ class App implements Callable<String> {
 
     @Override
     public String call() throws Exception {
-        System.out.println(Differ.generate(filepath1, filepath2));
+        System.out.println(generate(filepath1, filepath2));
         return "";
     }
 
-    public static void main(String[] args) throws Exception {
-        int exitCode = new CommandLine(new App()).execute(args);
-        System.exit(exitCode);
+    public static void main(String[] args) {
+        try {
+            int exit = new CommandLine(new App()).execute(args);
+            System.exit(exit);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

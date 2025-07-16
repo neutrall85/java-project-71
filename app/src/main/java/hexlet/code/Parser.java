@@ -14,7 +14,7 @@ public class Parser {
         File file = Paths.get(filePath).toFile();
         if (filePath.endsWith("json")) {
             mapper = new ObjectMapper();
-        } else if (filePath.endsWith("yml")) {
+        } else if (filePath.endsWith("yml") || filePath.endsWith("yaml")) {
             mapper = new YAMLMapper();
         }
         return mapper.readValue(file, new TypeReference<>() { });

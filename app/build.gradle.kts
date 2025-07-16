@@ -2,15 +2,16 @@ plugins {
     application
     checkstyle
     jacoco
+    java
     id("org.sonarqube") version "6.0.1.5171"
 }
 
 group = "hexlet.code"
-version = "1.0-SNAPSHOT"
+version = "1.0.3-SNAPSHOT"
 
 repositories {
     mavenCentral()
-    gradlePluginPortal()
+    //gradlePluginPortal()
 }
 
 dependencies {
@@ -37,6 +38,7 @@ tasks.jacocoTestReport {
         xml.required.set(true)
         html.required.set(true)
     }
+}
 
     sonar {
         properties {
@@ -49,4 +51,3 @@ tasks.jacocoTestReport {
     application {
         mainClass = "hexlet.code.App"
     }
-}
