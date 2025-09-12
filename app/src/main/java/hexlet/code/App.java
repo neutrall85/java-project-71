@@ -1,6 +1,7 @@
 package hexlet.code;
 
 import lombok.Getter;
+import lombok.Setter;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -15,7 +16,8 @@ import static hexlet.code.Differ.generate;
         version = "gendiff version 1.0",
         description = "Compares two configuration files and shows a difference")
 @Getter
-public class App implements Callable<String> {
+@Setter
+public final class App implements Callable<String> {
 
     @Parameters(
             index = "0",

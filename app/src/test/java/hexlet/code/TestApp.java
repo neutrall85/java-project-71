@@ -12,9 +12,9 @@ class TestApp {
     @Test
     void testSuccessfulExecution() {
         App app = new App();
-        app.filepath1 = "file1.json";
-        app.filepath2 = "file2.json";
-        app.format = "stylish";
+        app.setFilepath1("file1.json");
+        app.setFilepath2("file2.json");
+        app.setFormat("stylish");
 
         String result = app.call();
         assertNotNull(result);
@@ -24,18 +24,17 @@ class TestApp {
     @Test
     void testDifferentFormats() {
         App app = new App();
-        app.filepath1 = "file1.json";
-        app.filepath2 = "file2.json";
-
-        app.format = "stylish";
+        app.setFilepath1("file1.json");
+        app.setFilepath2("file2.json");
+        app.setFormat("stylish");
         String stylishResult = app.call();
         assertNotNull(stylishResult);
 
-        app.format = "plain";
+        app.setFormat("plain");
         String plainResult = app.call();
         assertNotNull(plainResult);
 
-        app.format = "json";
+        app.setFormat("json");
         String jsonResult = app.call();
         assertNotNull(jsonResult);
 
@@ -47,9 +46,9 @@ class TestApp {
     @Test
     void testInvalidFormat() {
         App app = new App();
-        app.filepath1 = "file1.json";
-        app.filepath2 = "file2.json";
-        app.format = "invalid-format";
+        app.setFilepath1("file1.json");
+        app.setFilepath2("file2.json");
+        app.setFormat("invalid-format");
 
         String result = app.call();
         assertTrue(result.isEmpty());
@@ -58,9 +57,9 @@ class TestApp {
     @Test
     void testMissingFile() {
         App app = new App();
-        app.filepath1 = "nonexistent-file.json";
-        app.filepath2 = "file2.json";
-        app.format = "stylish";
+        app.setFilepath1("nonexistent-file.json");
+        app.setFilepath2("file2.json");
+        app.setFormat("stylish");
 
         String result = app.call();
         assertTrue(result.isEmpty());
