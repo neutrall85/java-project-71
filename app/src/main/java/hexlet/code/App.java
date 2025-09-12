@@ -8,9 +8,10 @@ import java.util.concurrent.Callable;
 
 import static hexlet.code.Differ.generate;
 
-
-@Command(name = "gendiff", mixinStandardHelpOptions = true, version = "gendiff version 1.0",
-        description = "Compares two configuration files and shows a difference.")
+@Command(name = "gendiff",
+        mixinStandardHelpOptions = true,
+        version = "gendiff version 1.0",
+        description = "Compares two configuration files and shows a difference")
 public class App implements Callable<String> {
 
     @Parameters(
@@ -32,9 +33,15 @@ public class App implements Callable<String> {
     private String format;
 
     @Override
-    public String call() throws Exception {
-        System.out.println(generate(filepath1, filepath2, format));
-        return "";
+    public String call() {
+        try {
+            String result = generate(filepath1, filepath2, format);
+            System.out.println(result);
+            return result;
+        } catch (Exception e) {
+            System.err.println("Ошибка при выполнении: " + e.getMessage());
+            return "";
+        }
     }
 
     public static void main(String[] args) {
@@ -42,7 +49,7 @@ public class App implements Callable<String> {
             int exit = new CommandLine(new App()).execute(args);
             System.exit(exit);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println("Ошибка" + e.getMessage());
         }
     }
 }

@@ -4,44 +4,65 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 
-import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 
 import static java.nio.file.Files.readString;
 
-public class Parser {
-    public static Map<String, Object> getData(String filePath) throws Exception {
+public final class Parser {
+
+    private Parser() { }
+
+    public static Map<String, Object> getData(String filePath) throws FileProcessingException {
         Path fullPath = pathToFullPath(filePath);
-        Map<String, Object> file = null;
-        if (filePath.endsWith(".json")) {
-            file = jsonFileToMap(fullPath);
-        } else if (filePath.endsWith(".yml") || filePath.endsWith(".yaml")) {
-            file = yamlFileToMap(fullPath);
+
+        if (!Files.exists(fullPath)) {
+            throw new FileProcessingException("Файл не существует: " + fullPath);
         }
-        return file;
+
+        try {
+            return readFile(fullPath);
+        } catch (Exception e) {
+            throw new FileProcessingException("Ошибка обработки файла: " + filePath, e);
+        }
     }
 
-    public static Map<String, Object> jsonFileToMap(Path path) throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(readString(path), new TypeReference<>() { });
-    }
-    public static Map<String, Object> yamlFileToMap(Path path) throws Exception {
-        ObjectMapper mapper = new YAMLMapper();
-        return mapper.readValue(readString(path), new TypeReference<>() { });
-    }
-    public static Path pathToFullPath(String path) {
-        String path1 = "src/test/resources";
-        File file = new File(path1);
-        String absolutePath = file.getAbsolutePath();
-        Path resultPath = Path.of(path);
-        if (!path.startsWith("/")) {
-            resultPath = Path.of(absolutePath + "/" + path);
+    private static Map<String, Object> readFile(Path path) throws FileProcessingException {
+        ObjectMapper mapper = getMapper(path);
+
+        try {
+            return mapper.readValue(readString(path), new TypeReference<>() { });
+        } catch (Exception e) {
+            throw new FileProcessingException("Ошибка чтения файла: " + path, e);
         }
-        if (new File(resultPath.toString()).exists()) {
-            return resultPath;
+    }
+
+    private static ObjectMapper getMapper(Path path) {
+        String filePath = path.toString();
+
+        if (filePath.endsWith(".json")) {
+            return new ObjectMapper();
+        } else if (filePath.endsWith(".yml") || filePath.endsWith(".yaml")) {
+            return new YAMLMapper();
         }
-        throw new RuntimeException("File: " + resultPath + " doesn't exist");
+
+        throw new FileProcessingException("Неподдерживаемый формат файла: " + path);
+    }
+
+    public static Path pathToFullPath(String filePath) throws FileProcessingException {
+        Path absolutePath = Paths.get(filePath).toAbsolutePath();
+
+        if (!absolutePath.isAbsolute()) {
+            try {
+                Path currentDir = Paths.get("").toAbsolutePath();
+                return currentDir.resolve(filePath);
+            } catch (Exception e) {
+                throw new FileProcessingException("Ошибка при обработке пути: " + filePath, e);
+            }
+        }
+
+        return absolutePath;
     }
 }
-

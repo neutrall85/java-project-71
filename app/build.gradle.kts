@@ -1,8 +1,22 @@
+val junitVersion = "5.11.0"
+val junitApiVersion = "5.11.0"
+val picocliVersion = "4.7.6"
+val jacksonDatabindVersion = "2.18.2"
+val jacksonDataFormatYamlVersion = "2.15.2"
+val picocliCodegenVersion = "4.7.6"
+val assertjCoreVersion = "3.24.2"
+val junitEngineVersion = "5.9.2"
+val jetbrainsAnnotationsVersion = "23.0.0"
+val slf4jVersion = "2.0.7"
+val logbackVersion = "1.5.13"
+val lombokVersion = "1.18.38"
+
+
 plugins {
-    application
-    checkstyle
-    jacoco
-    java
+    id("application")
+    id("checkstyle")
+    id("jacoco")
+    id("java")
     id("org.sonarqube") version "6.0.1.5171"
 }
 
@@ -11,32 +25,46 @@ version = "1.0.3-SNAPSHOT"
 
 repositories {
     mavenCentral()
-    //gradlePluginPortal()
+    gradlePluginPortal()
 }
 
 dependencies {
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    implementation ("info.picocli:picocli:4.7.6")
-    annotationProcessor ("info.picocli:picocli-codegen:4.7.6")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.2")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.0")
-    testImplementation("org.assertj:assertj-core:3.24.2")
+    testImplementation(platform("org.junit:junit-bom:$junitVersion"))
+    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitApiVersion")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:$junitApiVersion")
+    testImplementation("org.assertj:assertj-core:$assertjCoreVersion")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitEngineVersion}")
+    implementation("info.picocli:picocli:$picocliVersion")
+    implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonDatabindVersion")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:$jacksonDataFormatYamlVersion")
+    implementation("org.jetbrains:annotations:${jetbrainsAnnotationsVersion}")
+    implementation("org.slf4j:slf4j-api:${slf4jVersion}")
+    implementation("ch.qos.logback:logback-classic:${logbackVersion}")
+    annotationProcessor("info.picocli:picocli-codegen:$picocliCodegenVersion")
+    annotationProcessor("org.projectlombok:lombok:$lombokVersion")
+    compileOnly("org.projectlombok:lombok:${lombokVersion}")
 }
 
-tasks.test {
-    useJUnitPlatform()
-    finalizedBy(tasks.jacocoTestReport)
+testing {
+    suites {
+        getting(JvmTestSuite::class) {
+            useJUnitJupiter()
+        }
+    }
 }
 
-tasks.jacocoTestReport {
-    dependsOn(tasks.test)
+tasks {
+    test {
+        useJUnitPlatform()
+        finalizedBy(jacocoTestReport)
+    }
 
-    reports {
-        xml.required.set(true)
-        html.required.set(true)
+    jacocoTestReport {
+        dependsOn(test)
+        reports {
+            xml.required.set(true)
+            html.required.set(true)
+        }
     }
 }
 
