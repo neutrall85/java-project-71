@@ -18,4 +18,9 @@ public final class Differ {
 
         return Formatter.format(formatName, firstFileData, secondFileData);
     }
+
+    public static String generate(String filePath1, String filePath2)
+            throws FileProcessingException {
+        return generate(filePath1, filePath2, "stylish");
+    }
 }
