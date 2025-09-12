@@ -18,19 +18,19 @@ public class App implements Callable<String> {
             index = "0",
             description = "path to first file",
             paramLabel = "filepath1")
-    private String filepath1;
+    String filepath1;
 
     @Parameters(
             index = "1",
             description = "path to second file",
             paramLabel = "filepath2")
-    private String filepath2;
+    String filepath2;
 
     @Option(names = {"-f", "--format"},
             paramLabel = "format",
             description = "output format [default: stylish]",
             defaultValue = "stylish")
-    private String format;
+    String format;
 
     @Override
     public String call() {

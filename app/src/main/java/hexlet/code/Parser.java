@@ -52,17 +52,15 @@ public final class Parser {
     }
 
     public static Path pathToFullPath(String filePath) throws FileProcessingException {
-        Path absolutePath = Paths.get(filePath).toAbsolutePath();
-
-        if (!absolutePath.isAbsolute()) {
-            try {
-                Path currentDir = Paths.get("").toAbsolutePath();
-                return currentDir.resolve(filePath);
-            } catch (Exception e) {
-                throw new FileProcessingException("Ошибка при обработке пути: " + filePath, e);
+        try {
+            Path basePath = Paths.get(filePath);
+            if (!basePath.isAbsolute()) {
+                return Paths.get("src/test/resources", filePath).toAbsolutePath();
             }
+            return basePath.toAbsolutePath();
+        } catch (Exception e) {
+            throw new FileProcessingException("Ошибка при обработке пути: " + filePath, e);
         }
-
-        return absolutePath;
     }
+
 }

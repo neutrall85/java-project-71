@@ -12,6 +12,7 @@ public final class Formatter {
         return switch (formatName) {
             case "plain" -> Plain.createPlain(first, second);
             case "stylish" -> Stylish.createStylish(first, second, INITIAL_INDENT);
+            case "json" -> Json.createJson(first, second);
             default -> throw new IllegalArgumentException("Неподдерживаемый формат: " + formatName);
         };
     }
