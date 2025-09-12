@@ -22,4 +22,5 @@
 ### Task9
 [![asciicast](https://asciinema.org/a/9LwBvNa0R20GyC5nPfeu5ph9g.svg)](https://asciinema.org/a/9LwBvNa0R20GyC5nPfeu5ph9g)
 
-
+### Task10
+[![asciicast](https://asciinema.org/a/frf7CoOl9J9ayc0uPpntL8gue.svg)](https://asciinema.org/a/frf7CoOl9J9ayc0uPpntL8gue)
