@@ -1,7 +1,10 @@
 package hexlet.code;
 
-public class FileProcessingException extends RuntimeException {
-
+public final class FileProcessingException extends RuntimeException {
+    /**
+     * Возвращает сообщение об ошибке.
+     * При расширении класса рекомендуется переопределять этот метод с учетом специфики подкласса.
+     */
     public FileProcessingException(String message) {
         super(message);
     }

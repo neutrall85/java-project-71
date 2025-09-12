@@ -9,6 +9,8 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TestPlain {
+    private static final int NUM_1 = 123;
+    private static final int NUM_2 = 456;
 
     @Test
     void testEmptyMaps() {
@@ -110,10 +112,10 @@ class TestPlain {
     @Test
     void testNumberValues() {
         Map<String, Object> first = new HashMap<>();
-        first.put("key1", 123);
+        first.put("key1", NUM_1);
 
         Map<String, Object> second = new HashMap<>();
-        second.put("key1", 456);
+        second.put("key1", NUM_2);
 
         String result = Plain.createPlain(first, second);
         String expected = "Property 'key1' was updated. From 123 to 456";
@@ -124,12 +126,12 @@ class TestPlain {
     void testMixedTypes() {
         Map<String, Object> first = new HashMap<>();
         first.put("key1", "string");
-        first.put("key2", 123);
+        first.put("key2", NUM_1);
         first.put("key3", true);
         first.put("key4", null);
 
         Map<String, Object> second = new HashMap<>();
-        second.put("key1", 456);
+        second.put("key1", NUM_2);
         second.put("key2", "new string");
         second.put("key3", false);
         second.put("key4", "not null anymore");

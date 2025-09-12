@@ -19,6 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TestParser {
+    private static final int NUM_1 = 123;
+
     @TempDir
     private Path tempDir;
 
@@ -35,7 +37,7 @@ class TestParser {
 
         testData = new HashMap<>();
         testData.put("key", "value");
-        testData.put("number", 123);
+        testData.put("number", NUM_1);
 
         ObjectMapper objectMapper = new ObjectMapper();
         Files.writeString(jsonFile, objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(testData));
