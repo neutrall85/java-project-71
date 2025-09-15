@@ -4,63 +4,31 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
 
-import static java.nio.file.Files.readString;
+import static java.util.Objects.requireNonNull;
 
 public final class Parser {
 
     private Parser() { }
 
-    public static Map<String, Object> getData(String filePath) throws FileProcessingException {
-        Path fullPath = pathToFullPath(filePath);
-
-        if (!Files.exists(fullPath)) {
-            throw new FileProcessingException("Файл не существует: " + fullPath);
-        }
+    public static Map<String, Object> parse(String content, String format) throws IllegalArgumentException {
+        ObjectMapper mapper = getMapper(format);
 
         try {
-            return readFile(fullPath);
+            return mapper.readValue(content, new TypeReference<>() { });
         } catch (Exception e) {
-            throw new FileProcessingException("Ошибка обработки файла: " + filePath, e);
+            throw new IllegalArgumentException("Ошибка при парсинге данных: " + e.getMessage(), e);
         }
     }
 
-    private static Map<String, Object> readFile(Path path) throws FileProcessingException {
-        ObjectMapper mapper = getMapper(path);
+    private static ObjectMapper getMapper(String format) {
+        requireNonNull(format, "Формат данных не может быть null");
 
-        try {
-            return mapper.readValue(readString(path), new TypeReference<>() { });
-        } catch (Exception e) {
-            throw new FileProcessingException("Ошибка чтения файла: " + path, e);
-        }
+        return switch (format) {
+            case "json" -> new ObjectMapper();
+            case "yaml", "yml" -> new YAMLMapper();
+            default -> throw new IllegalArgumentException("Неподдерживаемый формат данных: " + format);
+        };
     }
-
-    private static ObjectMapper getMapper(Path path) {
-        String filePath = path.toString();
-
-        if (filePath.endsWith(".json")) {
-            return new ObjectMapper();
-        } else if (filePath.endsWith(".yml") || filePath.endsWith(".yaml")) {
-            return new YAMLMapper();
-        }
-
-        throw new FileProcessingException("Неподдерживаемый формат файла: " + path);
-    }
-
-    public static Path pathToFullPath(String filePath) throws FileProcessingException {
-        try {
-            Path basePath = Paths.get(filePath);
-            if (!basePath.isAbsolute()) {
-                return Paths.get("src/test/resources", filePath).toAbsolutePath();
-            }
-            return basePath.toAbsolutePath();
-        } catch (Exception e) {
-            throw new FileProcessingException("Ошибка при обработке пути: " + filePath, e);
-        }
-    }
-
 }
