@@ -121,7 +121,7 @@ class TestJson {
         diff.add(entry);
 
         Exception exception = assertThrows(IllegalArgumentException.class, () ->
-            Json.createJson(diff)
+                Json.createJson(diff)
         );
 
         assertEquals("Неизвестный тип изменения: unknown", exception.getMessage());
@@ -166,5 +166,23 @@ class TestJson {
         Map<String, Object> map = new TreeMap<>();
         String result = Json.toJson(map);
         assertEquals("{ }", result);
+    }
+
+    @Test
+    void testCreateJsonWithNullValues() {
+        // Подготовка тестовых данных
+        List<Map<String, Object>> diff = new ArrayList<>();
+        Map<String, Object> entry = new HashMap<>();
+        entry.put("key", "testKey");
+        entry.put("type", "added");
+        entry.put("value", null);
+
+        diff.add(entry);
+
+        String json = Json.createJson(diff);
+
+        assertTrue(json.contains("\"testKey\""));
+        assertTrue(json.contains("\"status\" : \"added\""));
+        assertTrue(json.contains("\"value\" : null"));
     }
 }

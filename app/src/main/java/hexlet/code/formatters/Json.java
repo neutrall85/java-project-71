@@ -15,30 +15,45 @@ public final class Json {
 
     private Json() { }
 
-    public static String createJson(List<Map<String, Object>> diff) {
-        if (diff == null) {
-            throw new IllegalArgumentException("Данные не могут быть null");
-        }
+    public static String createJson(List<Map<String, Object>> diff) throws JsonSerializationException {
         Map<String, Object> result = new LinkedHashMap<>();
+
         for (Map<String, Object> entry : diff) {
             String key = (String) entry.get("key");
-            String type = (String) entry.get("type");
-            Object value1 = entry.get("value1");
-            Object value2 = entry.get("value2");
-            Object value = entry.get(VALUE);
+            if (key == null) {
+                throw new IllegalArgumentException("Ключ не может быть null");
+            }
+
+            String type = (String) entry.getOrDefault("type", null);
+            Object value1 = entry.getOrDefault("value1", null);
+            Object value2 = entry.getOrDefault("value2", null);
+            Object value = entry.getOrDefault(VALUE, null);
 
             switch (type) {
                 case "added":
-                    result.put(key, Map.of(STATUS, "added", VALUE, value));
+                    Map<String, Object> addedMap = new LinkedHashMap<>();
+                    addedMap.put(STATUS, "added");
+                    addedMap.put(VALUE, value);
+                    result.put(key, addedMap);
                     break;
                 case "deleted":
-                    result.put(key, Map.of(STATUS, "removed", VALUE, value));
+                    Map<String, Object> deletedMap = new LinkedHashMap<>();
+                    deletedMap.put(STATUS, "removed");
+                    deletedMap.put(VALUE, value);
+                    result.put(key, deletedMap);
                     break;
                 case "unchanged":
-                    result.put(key, Map.of(STATUS, "unchanged", VALUE, value));
+                    Map<String, Object> unchangedMap = new LinkedHashMap<>();
+                    unchangedMap.put(STATUS, "unchanged");
+                    unchangedMap.put(VALUE, value);
+                    result.put(key, unchangedMap);
                     break;
                 case "changed":
-                    result.put(key, Map.of(STATUS, "changed", "from", value1, "to", value2));
+                    Map<String, Object> changedMap = new LinkedHashMap<>();
+                    changedMap.put(STATUS, "changed");
+                    changedMap.put("from", value1);
+                    changedMap.put("to", value2);
+                    result.put(key, changedMap);
                     break;
                 default:
                     throw new IllegalArgumentException("Неизвестный тип изменения: " + type);
