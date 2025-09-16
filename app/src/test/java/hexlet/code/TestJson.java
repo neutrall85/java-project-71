@@ -1,125 +1,170 @@
 package hexlet.code;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.formatters.Json;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TestJson {
 
     @Test
-    void testEmptyMaps() {
-        Map<String, Object> first = new HashMap<>();
-        Map<String, Object> second = new HashMap<>();
+    void testCreateJsonAdded() {
+        List<Map<String, Object>> diff = new ArrayList<>();
+        Map<String, Object> entry = new HashMap<>();
+        entry.put("key", "testKey");
+        entry.put("type", "added");
+        entry.put("value", "newValue");
 
-        String result = Json.createJson(first, second);
-        assertTrue(result.contains("{ }"));
-    }
+        diff.add(entry);
 
-    @Test
-    void testAddedKey() {
-        Map<String, Object> first = new HashMap<>();
-        Map<String, Object> second = new HashMap<>();
-        second.put("key", "value");
-
-        String result = Json.createJson(first, second);
+        String result = Json.createJson(diff);
+        assertTrue(result.contains("\"testKey\""));
         assertTrue(result.contains("\"status\" : \"added\""));
-        assertTrue(result.contains("\"value\" : \"value\""));
+        assertTrue(result.contains("\"value\" : \"newValue\""));
     }
 
     @Test
-    void testRemovedKey() {
-        Map<String, Object> first = new HashMap<>();
-        first.put("key", "value");
-        Map<String, Object> second = new HashMap<>();
+    void testCreateJsonDeleted() {
+        List<Map<String, Object>> diff = new ArrayList<>();
+        Map<String, Object> entry = new HashMap<>();
+        entry.put("key", "testKey");
+        entry.put("type", "deleted");
+        entry.put("value", "oldValue");
 
-        String result = Json.createJson(first, second);
+        diff.add(entry);
+
+        String result = Json.createJson(diff);
+        assertTrue(result.contains("\"testKey\""));
         assertTrue(result.contains("\"status\" : \"removed\""));
-        assertTrue(result.contains("\"value\" : \"value\""));
+        assertTrue(result.contains("\"value\" : \"oldValue\""));
     }
 
     @Test
-    void testChangedKey() {
-        Map<String, Object> first = new HashMap<>();
-        first.put("key", "old");
-        Map<String, Object> second = new HashMap<>();
-        second.put("key", "new");
+    void testCreateJsonUnchanged() {
+        List<Map<String, Object>> diff = new ArrayList<>();
+        Map<String, Object> entry = new HashMap<>();
+        entry.put("key", "testKey");
+        entry.put("type", "unchanged");
+        entry.put("value", "sameValue");
 
-        String result = Json.createJson(first, second);
-        assertTrue(result.contains("\"status\" : \"changed\""));
-        assertTrue(result.contains("\"from\" : \"old\""));
-        assertTrue(result.contains("\"to\" : \"new\""));
-    }
+        diff.add(entry);
 
-    @Test
-    void testUnchangedKey() {
-        Map<String, Object> first = new HashMap<>();
-        first.put("key", "value");
-        Map<String, Object> second = new HashMap<>();
-        second.put("key", "value");
-
-        String result = Json.createJson(first, second);
+        String result = Json.createJson(diff);
+        assertTrue(result.contains("\"testKey\""));
         assertTrue(result.contains("\"status\" : \"unchanged\""));
-        assertTrue(result.contains("\"value\" : \"value\""));
+        assertTrue(result.contains("\"value\" : \"sameValue\""));
     }
 
     @Test
-    void testNullValues() {
-        Map<String, Object> first = new HashMap<>();
-        first.put("key1", null);
-        first.put("key2", "value");
-        Map<String, Object> second = new HashMap<>();
-        second.put("key1", "value");
-        second.put("key2", null);
+    void testCreateJsonChanged() {
+        List<Map<String, Object>> diff = new ArrayList<>();
+        Map<String, Object> entry = new HashMap<>();
+        entry.put("key", "testKey");
+        entry.put("type", "changed");
+        entry.put("value1", "oldValue");
+        entry.put("value2", "newValue");
 
-        String result = Json.createJson(first, second);
-        assertTrue(result.contains("\"status\" : \"added\"")); // для key1
-        assertTrue(result.contains("\"status\" : \"removed\"")); // для key2
+        diff.add(entry);
+
+        String result = Json.createJson(diff);
+        assertTrue(result.contains("\"testKey\""));
+        assertTrue(result.contains("\"status\" : \"changed\""));
+        assertTrue(result.contains("\"from\" : \"oldValue\""));
+        assertTrue(result.contains("\"to\" : \"newValue\""));
     }
 
     @Test
-    void testMultipleKeys() {
-        Map<String, Object> first = new HashMap<>();
-        first.put("key1", "value1");
-        first.put("key2", "value2");
+    void testCreateJsonMultipleEntries() {
+        List<Map<String, Object>> diff = new ArrayList<>();
 
-        Map<String, Object> second = new HashMap<>();
-        second.put("key1", "value1");
-        second.put("key3", "value3");
+        Map<String, Object> entry1 = new HashMap<>();
+        entry1.put("key", "testKey1");
+        entry1.put("type", "added");
+        entry1.put("value", "value1");
 
-        String result = Json.createJson(first, second);
+        Map<String, Object> entry2 = new HashMap<>();
+        entry2.put("key", "testKey2");
+        entry2.put("type", "deleted");
+        entry2.put("value", "value2");
 
-        Map<String, Object> expected = new TreeMap<>();
-        expected.put("key1", Map.of(
-                "status", "unchanged",
-                "value", "value1"
-        ));
-        expected.put("key2", Map.of(
-                "status", "removed",
-                "value", "value2"
-        ));
-        expected.put("key3", Map.of(
-                "status", "added",
-                "value", "value3"
-        ));
+        diff.add(entry1);
+        diff.add(entry2);
 
-        assertEquals(toJson(expected), result);
+        String result = Json.createJson(diff);
+
+        assertTrue(result.contains("\"testKey1\""));
+        assertTrue(result.contains("\"status\" : \"added\""));
+        assertTrue(result.contains("\"value\" : \"value1\""));
+        assertTrue(result.contains("\"testKey2\""));
+        assertTrue(result.contains("\"status\" : \"removed\""));
+        assertTrue(result.contains("\"value\" : \"value2\""));
     }
 
-    private String toJson(Map<String, Object> map) {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(map);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+    @Test
+    void testCreateJsonUnknownType() {
+        List<Map<String, Object>> diff = new ArrayList<>();
+        Map<String, Object> entry = new HashMap<>();
+        entry.put("key", "testKey");
+        entry.put("type", "unknown");
+        entry.put("value", "someValue");
+
+        diff.add(entry);
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+            Json.createJson(diff)
+        );
+
+        assertEquals("Неизвестный тип изменения: unknown", exception.getMessage());
     }
 
+    @Test
+    void testCreateJsonEmptyList() {
+        List<Map<String, Object>> diff = Collections.emptyList();
+        String result = Json.createJson(diff);
+        assertEquals("{ }", result.trim());
+    }
+
+    @Test
+    void testToJsonSimpleMap() {
+        Map<String, Object> map = Map.of("key", "value");
+        String result = Json.toJson(map);
+        assertEquals("{\n  \"key\" : \"value\"\n}", result);
+    }
+
+    @Test
+    void testToJsonComplexMap() {
+        Map<String, Object> map = new TreeMap<>();
+        map.put("number", 42);
+        map.put("boolean", true);
+        map.put("string", "test");
+        map.put("array", Arrays.asList(1, 2, 3));
+        map.put("nested", Map.of("inner", "value"));
+
+        String result = Json.toJson(map);
+        assertTrue(result.contains("\"number\" : 42"));
+        assertTrue(result.contains("\"boolean\" : true"));
+        assertTrue(result.contains("\"string\" : \"test\""));
+        assertTrue(result.contains("\"array\" : [ 1, 2, 3 ]"));
+        assertTrue(result.contains("""
+                "nested" : {
+                    "inner" : "value"
+                  }"""));
+    }
+
+    @Test
+    void testToJsonEmptyMap() {
+        Map<String, Object> map = new TreeMap<>();
+        String result = Json.toJson(map);
+        assertEquals("{ }", result);
+    }
 }

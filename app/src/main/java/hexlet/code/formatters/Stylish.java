@@ -43,7 +43,7 @@ public final class Stylish {
         return result.toString();
     }
 
-    private static String appendLine(int count, String prefix, String key, Object value) {
+    public static String appendLine(int count, String prefix, String key, Object value) {
         String space = " ";
         return space.repeat(count) + prefix + key + ": " + value + "\n";
     }

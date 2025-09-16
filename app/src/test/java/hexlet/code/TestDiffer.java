@@ -1,78 +1,88 @@
 package hexlet.code;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
-
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 class TestDiffer {
-    private String tempDir;
 
-    @BeforeEach
-    void setUp() throws Exception {
-        tempDir = Files.createTempDirectory("differ-test").toString();
-    }
+    private static final String JSON_FILE1 = "file1.json";
+    private static final String JSON_FILE2 = "file2.json";
+    private static final String YML_FILE1 = "file1.yml";
+    private static final String YML_FILE2 = "file2.yml";
 
+    // JSON input → JSON output
     @Test
-    void testGenerateSuccess() throws Exception {
-        String filePath1 = createTestFile("file1.json", "{\"key\": \"value\"}");
-        String filePath2 = createTestFile("file2.json", "{\"key\": \"new_value\"}");
-
-        String result = Differ.generate(filePath1, filePath2, "plain");
-
+    void testJsonInputJsonOutput() throws Exception {
+        String result = Differ.generate(JSON_FILE1, JSON_FILE2, "json");
         assertNotNull(result);
-        assertTrue(result.contains("key"));
+        assertTrue(result.contains("{"));
+        assertTrue(result.contains("\"added\""));
+        assertTrue(result.contains("\"removed\""));
     }
 
+    // JSON input → Stylish output
     @Test
-    void testGenerateEmptyFiles() throws Exception {
-        String filePath1 = createTestFile("empty1.json", "{}");
-        String filePath2 = createTestFile("empty2.json", "{}");
-
-        String result = Differ.generate(filePath1, filePath2, "plain");
-
-        assertEquals("", result.trim());
+    void testJsonInputStylishOutput() throws Exception {
+        String result = Differ.generate(JSON_FILE1, JSON_FILE2, "stylish");
+        assertNotNull(result);
+        assertTrue(result.contains("- follow: false"));
+        assertTrue(result.contains("- timeout: 50"));
     }
 
+    // JSON input → Plain output
     @Test
-    void testGenerateDifferentFormats() throws Exception {
-        String filePath1 = createTestFile("file1.json", "{\"key\": \"value\"}");
-        String filePath2 = createTestFile("file2.json", "{\"key\": \"new_value\"}");
-
-        String[] formats = {"plain", "stylish"};
-
-        for (String format : formats) {
-            String result = Differ.generate(filePath1, filePath2, format);
-            assertNotNull(result);
-        }
+    void testJsonInputPlainOutput() throws Exception {
+        String result = Differ.generate(JSON_FILE1, JSON_FILE2, "plain");
+        assertNotNull(result);
+        assertTrue(result.contains("Property 'follow' was removed"));
+        assertTrue(result.contains("Property 'timeout' was updated. From 50 to 20"));
     }
 
+    // JSON input → Default output
     @Test
-    void testGenerateInvalidFormat() throws Exception {
-        String filePath1 = createTestFile("file1.json", "{\"key\": \"value\"}");
-        String filePath2 = createTestFile("file2.json", "{\"key\": \"new_value\"}");
-
-        assertThrows(IllegalArgumentException.class,
-                () -> Differ.generate(filePath1, filePath2, "invalid_format")
-        );
+    void testJsonInputDefaultOutput() throws Exception {
+        String result = Differ.generate(JSON_FILE1, JSON_FILE2);
+        assertNotNull(result);
+        assertTrue(result.contains("- follow: false"));
+        assertTrue(result.contains("- timeout: 50"));
     }
 
+    // YAML input → JSON output
     @Test
-    void testGenerateFileNotFound() {
-        assertThrows(FileProcessingException.class,
-                () -> Differ.generate("non_existent_file.json", "another_non_existent_file.json", "plain")
-        );
+    void testYmlInputJsonOutput() throws Exception {
+        String result = Differ.generate(YML_FILE1, YML_FILE2, "json");
+        assertNotNull(result);
+        assertTrue(result.contains("{"));
+        assertTrue(result.contains("\"added\""));
+        assertTrue(result.contains("\"removed\""));
     }
 
-    private String createTestFile(String fileName, String content) throws Exception {
-        String filePath = tempDir + "/" + fileName;
-        Files.writeString(Paths.get(filePath), content);
-        return filePath;
+    // YAML input → Stylish output
+    @Test
+    void testYmlInputStylishOutput() throws Exception {
+        String result = Differ.generate(YML_FILE1, YML_FILE2, "stylish");
+        assertNotNull(result);
+        assertTrue(result.contains("- follow: false"));
+        assertTrue(result.contains("- timeout: 50"));
+    }
+
+    // YAML input → Plain output
+    @Test
+    void testYmlInputPlainOutput() throws Exception {
+        String result = Differ.generate(YML_FILE1, YML_FILE2, "plain");
+        assertNotNull(result);
+        assertTrue(result.contains("Property 'follow' was removed"));
+        assertTrue(result.contains("Property 'timeout' was updated. From 50 to 20"));
+    }
+
+    // YAML input → Default output
+    @Test
+    void testYmlInputDefaultOutput() throws Exception {
+        String result = Differ.generate(YML_FILE1, YML_FILE2);
+        assertNotNull(result);
+        assertTrue(result.contains("- follow: false"));
+        assertTrue(result.contains("- timeout: 50"));
     }
 }

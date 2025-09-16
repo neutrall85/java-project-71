@@ -1,95 +1,77 @@
 package hexlet.code;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-import org.yaml.snakeyaml.Yaml;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TestParser {
-    private static final int NUM_1 = 123;
 
-    @TempDir
-    private Path tempDir;
+    @Test
+    void testParseJsonSuccess() {
+        String json = "{\"name\": \"John\", \"age\": 30, \"city\": \"New York\"}";
+        Map<String, Object> result = Parser.parse(json, "json");
 
-    private Path jsonFile;
-    private Path yamlFile;
-    private Path invalidFile;
-    private Map<String, Object> testData;
-
-    @BeforeEach
-    void setUp() throws IOException {
-        jsonFile = tempDir.resolve("test.json");
-        yamlFile = tempDir.resolve("test.yaml");
-        invalidFile = tempDir.resolve("test.txt");
-
-        testData = new HashMap<>();
-        testData.put("key", "value");
-        testData.put("number", NUM_1);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        Files.writeString(jsonFile, objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(testData));
-
-        Yaml yaml = new Yaml();
-        Writer writer = new StringWriter();
-        yaml.dump(testData, writer);
-        Files.writeString(yamlFile, writer.toString());
-
-        Files.createFile(invalidFile);
+        assertEquals("John", result.get("name"));
+        assertEquals(30, result.get("age"));
+        assertEquals("New York", result.get("city"));
     }
 
     @Test
-    void testReadJsonFile() throws FileProcessingException {
-        Map<String, Object> result = Parser.getData(jsonFile.toString());
-        assertEquals(testData, result);
+    void testParseYamlSuccess() {
+        String yaml = """
+                name: John
+                age: 30
+                city: New York
+                """;
+        Map<String, Object> result = Parser.parse(yaml, "yaml");
+
+        assertEquals("John", result.get("name"));
+        assertEquals(30, result.get("age"));
+        assertEquals("New York", result.get("city"));
     }
 
     @Test
-    void testReadYamlFile() throws FileProcessingException {
-        Map<String, Object> result = Parser.getData(yamlFile.toString());
-        assertEquals(testData, result);
+    void testParseYmlSuccess() {
+        String yml = """
+                name: John
+                age: 30
+                city: New York
+                """;
+        Map<String, Object> result = Parser.parse(yml, "yml");
+
+        assertEquals("John", result.get("name"));
+        assertEquals(30, result.get("age"));
+        assertEquals("New York", result.get("city"));
     }
 
     @Test
-    void testInvalidFileExtension() {
-        Exception exception = assertThrows(FileProcessingException.class, this::processInvalidFile);
-        assertTrue(exception.getMessage().contains("Неподдерживаемый формат файла"));
-    }
-
-    private void processInvalidFile() {
-        Parser.getData(invalidFile.toString());
-    }
-
-    @Test
-    void testNonExistentFile() {
-        Exception exception = assertThrows(FileProcessingException.class, () ->
-            Parser.getData("non_existent_file.json")
+    void testInvalidFormat() {
+        assertThrows(IllegalArgumentException.class, () ->
+            Parser.parse("{}", "xml")
         );
-        assertTrue(exception.getMessage().contains("Файл не существует"));
     }
 
     @Test
-    void testRelativePath() throws FileProcessingException {
-        Path relativePath = tempDir.resolve("test.json");
-        Map<String, Object> result = Parser.getData(relativePath.toString());
-        assertEquals(testData, result);
+    void testNullFormat() {
+        assertThrows(NullPointerException.class, () ->
+            Parser.parse("{}", null)
+        );
     }
 
     @Test
-    void testPathToFullPath() {
-        Path result = Parser.pathToFullPath(jsonFile.toString());
-        assertTrue(Files.exists(result));
+    void testInvalidJson() {
+        assertThrows(IllegalArgumentException.class, () ->
+            Parser.parse("{invalid json", "json")
+        );
+    }
+
+    @Test
+    void testEmptyContent() {
+        assertThrows(IllegalArgumentException.class, () ->
+            Parser.parse("", "json")
+        );
     }
 }

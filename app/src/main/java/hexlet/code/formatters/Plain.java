@@ -33,7 +33,7 @@ public final class Plain {
             }
         }
 
-        return result.toString().stripTrailing();
+        return result.toString().trim();
     }
 
     private static String addedProperty(String key, Object value) {
@@ -50,7 +50,7 @@ public final class Plain {
                 key, formatValue(oldValue), formatValue(newValue));
     }
 
-    private static String formatValue(Object value) {
+    public static String formatValue(Object value) {
         if (value == null) {
             return "null";
         }
@@ -66,7 +66,7 @@ public final class Plain {
         return String.format("'%s'", value);
     }
 
-    private static boolean isComplexValue(Object value) {
+    public static boolean isComplexValue(Object value) {
         return value instanceof Map
                 || value instanceof Object[]
                 || value instanceof java.util.Collection;

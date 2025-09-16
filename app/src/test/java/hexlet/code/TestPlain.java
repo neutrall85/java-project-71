@@ -2,198 +2,195 @@ package hexlet.code;
 
 import hexlet.code.formatters.Plain;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TestPlain {
-    private static final int NUM_1 = 123;
-    private static final int NUM_2 = 456;
 
     @Test
-    void testEmptyMaps() {
-        Map<String, Object> first = new HashMap<>();
-        Map<String, Object> second = new HashMap<>();
+    void testCreatePlainWithAddedProperty() {
+        List<Map<String, Object>> diff = new ArrayList<>();
+        Map<String, Object> entry = new HashMap<>();
+        entry.put("key", "testKey");
+        entry.put("type", "added");
+        entry.put("value", "testValue");
+        diff.add(entry);
 
-        String result = Plain.createPlain(first, second);
-        assertEquals("", result);
+        String expected = "Property 'testKey' was added with value: 'testValue'";
+        String result = Plain.createPlain(diff);
+
+        assertEquals(expected, result);
     }
 
     @Test
-    void testAddedProperty() {
-        Map<String, Object> first = new HashMap<>();
-        Map<String, Object> second = new HashMap<>();
-        second.put("key1", "value1");
+    void testCreatePlainWithRemovedProperty() {
+        List<Map<String, Object>> diff = new ArrayList<>();
+        Map<String, Object> entry = new HashMap<>();
+        entry.put("key", "testKey");
+        entry.put("type", "deleted");
+        diff.add(entry);
 
-        String result = Plain.createPlain(first, second);
-        assertEquals("Property 'key1' was added with value: 'value1'", result);
+        String expected = "Property 'testKey' was removed";
+        String result = Plain.createPlain(diff);
+        assertEquals(expected, result);
     }
 
     @Test
-    void testRemovedProperty() {
-        Map<String, Object> first = new HashMap<>();
-        first.put("key1", "value1");
-        Map<String, Object> second = new HashMap<>();
+    void testCreatePlainWithUpdatedProperty() {
+        List<Map<String, Object>> diff = new ArrayList<>();
+        Map<String, Object> entry = new HashMap<>();
+        entry.put("key", "testKey");
+        entry.put("type", "changed");
+        entry.put("value1", "oldValue");
+        entry.put("value2", "newValue");
+        diff.add(entry);
 
-        String result = Plain.createPlain(first, second);
-        assertEquals("Property 'key1' was removed", result);
+        String expected = "Property 'testKey' was updated. From 'oldValue' to 'newValue'";
+        String result = Plain.createPlain(diff);
+        assertEquals(expected, result);
     }
 
     @Test
-    void testUpdatedProperty() {
-        Map<String, Object> first = new HashMap<>();
-        first.put("key1", "oldValue");
-        Map<String, Object> second = new HashMap<>();
-        second.put("key1", "newValue");
+    void testCreatePlainWithMultipleChanges() {
+        List<Map<String, Object>> diff = new ArrayList<>();
 
-        String result = Plain.createPlain(first, second);
-        assertEquals("Property 'key1' was updated. From 'oldValue' to 'newValue'", result);
-    }
+        // Added property
+        Map<String, Object> entry1 = new HashMap<>();
+        entry1.put("key", "key1");
+        entry1.put("type", "added");
+        entry1.put("value", "value1");
 
-    @Test
-    void testMultipleChanges() {
-        Map<String, Object> first = new HashMap<>();
-        first.put("key1", "oldValue");
-        first.put("key2", "value2");
+        // Removed property
+        Map<String, Object> entry2 = new HashMap<>();
+        entry2.put("key", "key2");
+        entry2.put("type", "deleted");
 
-        Map<String, Object> second = new HashMap<>();
-        second.put("key1", "newValue");
-        second.put("key3", "value3");
+        // Updated property
+        Map<String, Object> entry3 = new HashMap<>();
+        entry3.put("key", "key3");
+        entry3.put("type", "changed");
+        entry3.put("value1", "old");
+        entry3.put("value2", "new");
 
-        String result = Plain.createPlain(first, second);
+        diff.add(entry1);
+        diff.add(entry2);
+        diff.add(entry3);
+
         String expected = """
-                Property 'key1' was updated. From 'oldValue' to 'newValue'
-                Property 'key2' was removed
-                Property 'key3' was added with value: 'value3'""";
+                        Property 'key1' was added with value: 'value1'
+                        Property 'key2' was removed
+                        Property 'key3' was updated. From 'old' to 'new'""";
+        String result = Plain.createPlain(diff);
         assertEquals(expected, result);
     }
 
     @Test
-    void testComplexValues() {
-        Map<String, Object> first = new HashMap<>();
-        first.put("key1", Map.of("nested", "value"));
-
-        Map<String, Object> second = new HashMap<>();
-        second.put("key1", Map.of("nested", "new value"));
-
-        String result = Plain.createPlain(first, second);
-        String expected = "Property 'key1' was updated. From [complex value] to [complex value]";
-        assertEquals(expected, result);
+    void testFormatValueWithString() {
+        assertEquals("'test'", Plain.formatValue("test"));
     }
 
     @Test
-    void testBooleanValues() {
-        Map<String, Object> first = new HashMap<>();
-        first.put("key1", true);
-
-        Map<String, Object> second = new HashMap<>();
-        second.put("key1", false);
-
-        String result = Plain.createPlain(first, second);
-        String expected = "Property 'key1' was updated. From true to false";
-        assertEquals(expected, result);
+    void testFormatValueWithNumber() {
+        assertEquals("123", Plain.formatValue(123));
+        assertEquals("45.67", Plain.formatValue(45.67));
     }
 
     @Test
-    void testNullValues() {
-        Map<String, Object> first = new HashMap<>();
-        first.put("key1", null);
-
-        Map<String, Object> second = new HashMap<>();
-        second.put("key1", "value");
-
-        String result = Plain.createPlain(first, second);
-        String expected = "Property 'key1' was updated. From null to 'value'";
-        assertEquals(expected, result);
+    void testFormatValueWithBoolean() {
+        assertEquals("true", Plain.formatValue(true));
+        assertEquals("false", Plain.formatValue(false));
     }
 
     @Test
-    void testNumberValues() {
-        Map<String, Object> first = new HashMap<>();
-        first.put("key1", NUM_1);
-
-        Map<String, Object> second = new HashMap<>();
-        second.put("key1", NUM_2);
-
-        String result = Plain.createPlain(first, second);
-        String expected = "Property 'key1' was updated. From 123 to 456";
-        assertEquals(expected, result);
+    void testFormatValueWithNull() {
+        assertEquals("null", Plain.formatValue(null));
     }
 
     @Test
-    void testMixedTypes() {
-        Map<String, Object> first = new HashMap<>();
-        first.put("key1", "string");
-        first.put("key2", NUM_1);
-        first.put("key3", true);
-        first.put("key4", null);
+    void testIsComplexValue() {
+        assertTrue(Plain.isComplexValue(new HashMap<>()), "Map должна быть сложной структурой");
+        assertTrue(Plain.isComplexValue(new ArrayList<>()), "List должна быть сложной структурой");
+        assertTrue(Plain.isComplexValue(new Object[]{}), "Массив должен быть сложной структурой");
+        assertFalse(Plain.isComplexValue("string"), "Строка не должна быть сложной структурой");
+        assertFalse(Plain.isComplexValue(123), "Число не должно быть сложной структурой");
+        assertFalse(Plain.isComplexValue(true), "Булево значение не должно быть сложной структурой");
+        assertFalse(false, "Null не должен быть сложной структурой");
+    }
 
-        Map<String, Object> second = new HashMap<>();
-        second.put("key1", NUM_2);
-        second.put("key2", "new string");
-        second.put("key3", false);
-        second.put("key4", "not null anymore");
+    @Test
+    void testFormatValueWithComplexValue() {
+        assertEquals("[complex value]", Plain.formatValue(new HashMap<>()),
+                "Для Map должен возвращаться [complex value]");
+        assertEquals("[complex value]", Plain.formatValue(new ArrayList<>()),
+                "Для List должен возвращаться [complex value]");
+        assertEquals("[complex value]", Plain.formatValue(new Object[]{}),
+                "Для массива должен возвращаться [complex value]");
+    }
 
-        String result = Plain.createPlain(first, second);
+    @Test
+    void testEmptyDiff() {
+        List<Map<String, Object>> diff = Collections.emptyList();
+        String result = Plain.createPlain(diff);
+        assertTrue(result.isEmpty(), "Для пустого diff должен возвращаться пустой результат");
+    }
+
+    @Test
+    void testMixedValues() {
+        List<Map<String, Object>> diff = new ArrayList<>();
+
+        // Добавляем разные типы значений
+        Map<String, Object> entry1 = new HashMap<>();
+        entry1.put("key", "key1");
+        entry1.put("type", "added");
+        entry1.put("value", true);
+
+        Map<String, Object> entry2 = new HashMap<>();
+        entry2.put("key", "key2");
+        entry2.put("type", "added");
+        entry2.put("value", 42);
+
+        Map<String, Object> entry3 = new HashMap<>();
+        entry3.put("key", "key3");
+        entry3.put("type", "added");
+        entry3.put("value", "string");
+
+        Map<String, Object> entry4 = new HashMap<>();
+        entry4.put("key", "key4");
+        entry4.put("type", "added");
+        entry4.put("value", new HashMap<>());
+
+        diff.add(entry1);
+        diff.add(entry2);
+        diff.add(entry3);
+        diff.add(entry4);
+
         String expected = """
-                Property 'key1' was updated. From 'string' to 456
-                Property 'key2' was updated. From 123 to 'new string'
-                Property 'key3' was updated. From true to false
-                Property 'key4' was updated. From null to 'not null anymore'""";
-        assertEquals(expected, result);
+                Property 'key1' was added with value: true
+                Property 'key2' was added with value: 42
+                Property 'key3' was added with value: 'string'
+                Property 'key4' was added with value: [complex value]""";
+
+        assertEquals(expected, Plain.createPlain(diff), "Неверный результат форматирования смешанных значений");
     }
 
     @Test
-    void testComplexNestedValues() {
-        Map<String, Object> first = new HashMap<>();
-        first.put("key1", Map.of("nested1", "value1", "nested2", "value2"));
+    void testInvalidType() {
+        List<Map<String, Object>> diff = new ArrayList<>();
+        Map<String, Object> entry = new HashMap<>();
+        entry.put("key", "testKey");
+        entry.put("type", "unknown");
+        entry.put("value", "testValue");
+        diff.add(entry);
 
-        Map<String, Object> second = new HashMap<>();
-        second.put("key1", Map.of("nested1", "new value1", "nested3", "value3"));
-
-        String result = Plain.createPlain(first, second);
-        String expected = "Property 'key1' was updated. From [complex value] to [complex value]";
-        assertEquals(expected, result);
-    }
-
-    @Test
-    void testArrayValues() {
-        Map<String, Object> first = new HashMap<>();
-        first.put("key1", new String[]{"a", "b", "c"});
-
-        Map<String, Object> second = new HashMap<>();
-        second.put("key1", new String[]{"x", "y"});
-
-        String result = Plain.createPlain(first, second);
-        String expected = "Property 'key1' was updated. From [complex value] to [complex value]";
-        assertEquals(expected, result);
-    }
-
-    @Test
-    void testCollectionValues() {
-        Map<String, Object> first = new HashMap<>();
-        first.put("key1", List.of("a", "b", "c"));
-
-        Map<String, Object> second = new HashMap<>();
-        second.put("key1", List.of("x", "y"));
-
-        String result = Plain.createPlain(first, second);
-        String expected = "Property 'key1' was updated. From [complex value] to [complex value]";
-        assertEquals(expected, result);
-    }
-
-    @Test
-    void testEmptyValue() {
-        Map<String, Object> first = new HashMap<>();
-        first.put("key1", "");
-
-        Map<String, Object> second = new HashMap<>();
-        second.put("key1", "new value");
-
-        String result = Plain.createPlain(first, second);
-        String expected = "Property 'key1' was updated. From '' to 'new value'";
-        assertEquals(expected, result);
+        String result = Plain.createPlain(diff);
+        assertTrue(result.isEmpty(), "Для неизвестного типа должен возвращаться пустой результат");
     }
 }
