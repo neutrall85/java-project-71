@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 class TestStylish {
+    private static final int TEST_NUM1 = 4;
 
     @Test
     void testCreateStylishWithAdded() {
@@ -21,7 +22,7 @@ class TestStylish {
         diff.add(entry);
 
         String expected = "    {\n      + testKey: testValue\n    }";
-        Assertions.assertEquals(expected, Stylish.createStylish(diff, 4));
+        Assertions.assertEquals(expected, Stylish.createStylish(diff, TEST_NUM1));
     }
 
     @Test
@@ -34,7 +35,7 @@ class TestStylish {
         diff.add(entry);
 
         String expected = "    {\n      - testKey: testValue\n    }";
-        Assertions.assertEquals(expected, Stylish.createStylish(diff, 4));
+        Assertions.assertEquals(expected, Stylish.createStylish(diff, TEST_NUM1));
     }
 
     @Test
@@ -47,7 +48,7 @@ class TestStylish {
         diff.add(entry);
 
         String expected = "    {\n        testKey: testValue\n    }";
-        Assertions.assertEquals(expected, Stylish.createStylish(diff, 4));
+        Assertions.assertEquals(expected, Stylish.createStylish(diff, TEST_NUM1));
     }
 
     @Test
@@ -61,7 +62,7 @@ class TestStylish {
         diff.add(entry);
 
         String expected = "    {\n      - testKey: oldValue\n      + testKey: newValue\n    }";
-        Assertions.assertEquals(expected, Stylish.createStylish(diff, 4));
+        Assertions.assertEquals(expected, Stylish.createStylish(diff, TEST_NUM1));
     }
 
     @Test
@@ -82,19 +83,19 @@ class TestStylish {
         diff.add(entry2);
 
         String expected = "    {\n      + key1: value1\n      - key2: value2\n    }";
-        Assertions.assertEquals(expected, Stylish.createStylish(diff, 4));
+        Assertions.assertEquals(expected, Stylish.createStylish(diff, TEST_NUM1));
     }
 
     @Test
     void testCreateStylishWithEmptyList() {
         List<Map<String, Object>> diff = new ArrayList<>();
         String expected = "    {\n    }";
-        Assertions.assertEquals(expected, Stylish.createStylish(diff, 4));
+        Assertions.assertEquals(expected, Stylish.createStylish(diff, TEST_NUM1));
     }
 
     @Test
     void testAppendLine() {
-        String result = Stylish.appendLine(4, "  + ", "testKey", "testValue");
+        String result = Stylish.appendLine(TEST_NUM1, "  + ", "testKey", "testValue");
         String expected = "      + testKey: testValue\n";
         Assertions.assertEquals(expected, result);
     }
@@ -109,7 +110,7 @@ class TestStylish {
         diff.add(entry);
 
         Assertions.assertThrows(IllegalArgumentException.class, () ->
-            Stylish.createStylish(diff, 4)
+            Stylish.createStylish(diff, TEST_NUM1)
         );
     }
 
@@ -124,7 +125,7 @@ class TestStylish {
         diff.add(entry);
 
         String expected = "    {\n      - testKey: null\n      + testKey: null\n    }";
-        Assertions.assertEquals(expected, Stylish.createStylish(diff, 4));
+        Assertions.assertEquals(expected, Stylish.createStylish(diff, TEST_NUM1));
     }
 
     @Test
@@ -143,7 +144,7 @@ class TestStylish {
 
         String expected =
                 "    {\n      - testKey: {nestedKey=nestedValue}\n      + testKey: {nestedKey=newNestedValue}\n    }";
-        Assertions.assertEquals(expected, Stylish.createStylish(diff, 4));
+        Assertions.assertEquals(expected, Stylish.createStylish(diff, TEST_NUM1));
     }
 
     @Test
@@ -156,6 +157,6 @@ class TestStylish {
         diff.add(entry);
 
         String expected = "    {\n        testKey: \n    }";
-        Assertions.assertEquals(expected, Stylish.createStylish(diff, 4));
+        Assertions.assertEquals(expected, Stylish.createStylish(diff, TEST_NUM1));
     }
 }

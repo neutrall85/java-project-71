@@ -14,6 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TestPlain {
+    private static final int TEST_NUM1 = 123;
+    private static final double TEST_NUM2 = 45.67;
 
     @Test
     void testCreatePlainWithAddedProperty() {
@@ -99,8 +101,8 @@ class TestPlain {
 
     @Test
     void testFormatValueWithNumber() {
-        assertEquals("123", Plain.formatValue(123));
-        assertEquals("45.67", Plain.formatValue(45.67));
+        assertEquals("123", Plain.formatValue(TEST_NUM1));
+        assertEquals("45.67", Plain.formatValue(TEST_NUM2));
     }
 
     @Test
@@ -120,7 +122,7 @@ class TestPlain {
         assertTrue(Plain.isComplexValue(new ArrayList<>()), "List должна быть сложной структурой");
         assertTrue(Plain.isComplexValue(new Object[]{}), "Массив должен быть сложной структурой");
         assertFalse(Plain.isComplexValue("string"), "Строка не должна быть сложной структурой");
-        assertFalse(Plain.isComplexValue(123), "Число не должно быть сложной структурой");
+        assertFalse(Plain.isComplexValue(TEST_NUM1), "Число не должно быть сложной структурой");
         assertFalse(Plain.isComplexValue(true), "Булево значение не должно быть сложной структурой");
         assertFalse(false, "Null не должен быть сложной структурой");
     }
@@ -155,7 +157,7 @@ class TestPlain {
         Map<String, Object> entry2 = new HashMap<>();
         entry2.put("key", "key2");
         entry2.put("type", "added");
-        entry2.put("value", 42);
+        entry2.put("value", TEST_NUM2);
 
         Map<String, Object> entry3 = new HashMap<>();
         entry3.put("key", "key3");
@@ -174,7 +176,7 @@ class TestPlain {
 
         String expected = """
                 Property 'key1' was added with value: true
-                Property 'key2' was added with value: 42
+                Property 'key2' was added with value: 45.67
                 Property 'key3' was added with value: 'string'
                 Property 'key4' was added with value: [complex value]""";
 

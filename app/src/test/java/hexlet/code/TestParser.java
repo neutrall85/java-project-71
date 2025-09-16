@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TestParser {
+    private static final int TEST_NUM = 30;
 
     @Test
     void testParseJsonSuccess() {
@@ -15,7 +16,7 @@ class TestParser {
         Map<String, Object> result = Parser.parse(json, "json");
 
         assertEquals("John", result.get("name"));
-        assertEquals(30, result.get("age"));
+        assertEquals(TEST_NUM, result.get("age"));
         assertEquals("New York", result.get("city"));
     }
 
@@ -29,7 +30,7 @@ class TestParser {
         Map<String, Object> result = Parser.parse(yaml, "yaml");
 
         assertEquals("John", result.get("name"));
-        assertEquals(30, result.get("age"));
+        assertEquals(TEST_NUM, result.get("age"));
         assertEquals("New York", result.get("city"));
     }
 
@@ -43,7 +44,7 @@ class TestParser {
         Map<String, Object> result = Parser.parse(yml, "yml");
 
         assertEquals("John", result.get("name"));
-        assertEquals(30, result.get("age"));
+        assertEquals(TEST_NUM, result.get("age"));
         assertEquals("New York", result.get("city"));
     }
 

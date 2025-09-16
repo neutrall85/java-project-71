@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TestJson {
+    private static final int TEST_NUM1 = 42;
 
     @Test
     void testCreateJsonAdded() {
@@ -144,7 +145,7 @@ class TestJson {
     @Test
     void testToJsonComplexMap() {
         Map<String, Object> map = new TreeMap<>();
-        map.put("number", 42);
+        map.put("number", TEST_NUM1);
         map.put("boolean", true);
         map.put("string", "test");
         map.put("array", Arrays.asList(1, 2, 3));
