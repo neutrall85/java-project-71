@@ -16,6 +16,9 @@ public final class Json {
     private Json() { }
 
     public static String createJson(List<Map<String, Object>> diff) {
+        if (diff == null) {
+            throw new IllegalArgumentException("Данные не могут быть null");
+        }
         Map<String, Object> result = new LinkedHashMap<>();
         for (Map<String, Object> entry : diff) {
             String key = (String) entry.get("key");

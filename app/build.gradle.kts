@@ -7,7 +7,6 @@ val picocliCodegenVersion = "4.7.6"
 val assertjCoreVersion = "3.24.2"
 val junitEngineVersion = "5.9.2"
 val jetbrainsAnnotationsVersion = "23.0.0"
-val slf4jVersion = "2.0.7"
 val logbackVersion = "1.5.13"
 val lombokVersion = "1.18.38"
 
@@ -37,7 +36,6 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonDatabindVersion")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:$jacksonDataFormatYamlVersion")
     implementation("org.jetbrains:annotations:${jetbrainsAnnotationsVersion}")
-    implementation("org.slf4j:slf4j-api:${slf4jVersion}")
     implementation("ch.qos.logback:logback-classic:${logbackVersion}")
     annotationProcessor("info.picocli:picocli-codegen:$picocliCodegenVersion")
     annotationProcessor("org.projectlombok:lombok:$lombokVersion")
