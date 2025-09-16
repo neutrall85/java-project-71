@@ -148,14 +148,14 @@ class TestJson {
         map.put("number", TEST_NUM1);
         map.put("boolean", true);
         map.put("string", "test");
-        map.put("array", Arrays.asList(1, 2, 3));
+        map.put("array", Arrays.asList("a", "b", "c"));
         map.put("nested", Map.of("inner", "value"));
 
         String result = Json.toJson(map);
         assertTrue(result.contains("\"number\" : 42"));
         assertTrue(result.contains("\"boolean\" : true"));
         assertTrue(result.contains("\"string\" : \"test\""));
-        assertTrue(result.contains("\"array\" : [ 1, 2, 3 ]"));
+        assertTrue(result.contains("\"array\" : [ \"a\", \"b\", \"c\" ]"));
         assertTrue(result.contains("""
                 "nested" : {
                     "inner" : "value"
