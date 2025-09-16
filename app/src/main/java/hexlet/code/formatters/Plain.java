@@ -1,38 +1,40 @@
 package hexlet.code.formatters;
 
+import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public final class Plain {
 
     private Plain() { }
 
-    public static String createPlain(Map<String, Object> first, Map<String, Object> second) {
+    public static String createPlain(List<Map<String, Object>> diff) {
         StringBuilder result = new StringBuilder();
 
-        var allKeys = new java.util.TreeSet<>(first.keySet());
-        allKeys.addAll(second.keySet());
+        for (Map<String, Object> entry : diff) {
+            String key = (String) entry.get("key");
+            String type = (String) entry.get("type");
 
-        for (String key : allKeys) {
-            Object oldValue = first.get(key);
-            Object newValue = second.get(key);
-
-            boolean existsInFirst = first.containsKey(key);
-            boolean existsInSecond = second.containsKey(key);
-
-            if (!existsInSecond) {
-                result.append(removedProperty(key));
-            } else if (!existsInFirst) {
-                result.append(addedProperty(key, newValue));
-            } else if (!Objects.equals(oldValue, newValue)) {
-                result.append(updatedProperty(key, oldValue, newValue));
+            switch (type) {
+                case "added":
+                    result.append(addedProperty(key, entry.get("value")));
+                    break;
+                case "deleted":
+                    result.append(removedProperty(key));
+                    break;
+                case "changed":
+                    result.append(updatedProperty(
+                            key,
+                            entry.get("value1"),
+                            entry.get("value2")
+                    ));
+                    break;
+                default:
+                    break;
             }
         }
 
         return result.toString().stripTrailing();
     }
-
-
 
     private static String addedProperty(String key, Object value) {
         return String.format("Property '%s' was added with value: %s%n",
@@ -64,9 +66,9 @@ public final class Plain {
         return String.format("'%s'", value);
     }
 
-
-
     private static boolean isComplexValue(Object value) {
-        return value instanceof Map || value instanceof Object[] || value instanceof java.util.Collection;
+        return value instanceof Map
+                || value instanceof Object[]
+                || value instanceof java.util.Collection;
     }
 }

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
 
 public final class Differ {
@@ -16,10 +17,12 @@ public final class Differ {
         String content2 = readContent(path2);
 
         String format = detectFormat(path1);
+
         try {
             Map<String, Object> data1 = Parser.parse(content1, format);
             Map<String, Object> data2 = Parser.parse(content2, format);
-            return Formatter.format(formatName, data1, data2);
+            List<Map<String, Object>> diff = DifferenceCalc.calculateDifferences(data1, data2);
+            return Formatter.format(formatName, diff);
         } catch (IllegalArgumentException e) {
             throw new IOException("Ошибка при парсинге данных: " + e.getMessage(), e);
         }
@@ -31,7 +34,6 @@ public final class Differ {
 
     private static String readContent(String path) throws IOException {
         Path fullPath = getFullPath(path);
-
         try {
             return Files.readString(fullPath);
         } catch (Exception e) {

@@ -1,63 +1,49 @@
 package hexlet.code.formatters;
 
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 public final class Stylish {
 
     private Stylish() { }
 
-    public static String createStylish(Map<String, Object> firstFileData,
-                                       Map<String, Object> secondFileData,
-                                       int count) {
-        Set<String> keys = new TreeSet<>(firstFileData.keySet());
-        keys.addAll(secondFileData.keySet());
+    public static String createStylish(List<Map<String, Object>> diff, int count) {
+        StringBuilder result = new StringBuilder();
         String space = " ";
-        StringBuilder result = new StringBuilder(space.repeat(count) + "{\n");
+        result.append(space.repeat(count)).append("{\n");
 
-        for (String key : keys) {
-            result.append(processKey(count, key, firstFileData, secondFileData));
+        for (Map<String, Object> entry : diff) {
+            String key = (String) entry.get("key");
+            String type = (String) entry.get("type");
+            Object value = entry.get("value");
+            Object value1 = entry.getOrDefault("value1", null);
+            Object value2 = entry.getOrDefault("value2", null);
+
+            switch (type) {
+                case "added":
+                    result.append(appendLine(count, "  + ", key, value));
+                    break;
+                case "deleted":
+                    result.append(appendLine(count, "  - ", key, value));
+                    break;
+                case "unchanged":
+                    result.append(appendLine(count, "    ", key, value));
+                    break;
+                case "changed":
+                    result.append(appendLine(count, "  - ", key, value1))
+                            .append(appendLine(count, "  + ", key, value2));
+                    break;
+                default:
+                    throw new IllegalArgumentException("Неизвестный тип изменения: " + type);
+
+            }
         }
 
         result.append(space.repeat(count)).append("}");
         return result.toString();
     }
 
-    public static String processKey(int count, String key,
-                                     Map<String, Object> firstFileData,
-                                     Map<String, Object> secondFileData) {
-
-        if (!firstFileData.containsKey(key)) {
-            return appendLine(count, "  + ", key, secondFileData.get(key));
-        }
-
-        if (!secondFileData.containsKey(key)) {
-            return appendLine(count, "  - ", key, firstFileData.get(key));
-        }
-
-        return stylishEasy(count, key, firstFileData, secondFileData);
-    }
-
-    public static String stylishEasy(int count, String key,
-                                      Map<String, Object> firstFileData,
-                                      Map<String, Object> secondFileData) {
-        Object objOf1 = firstFileData.get(key);
-        Object objOf2 = secondFileData.get(key);
-
-        if (areEqual(objOf1, objOf2)) {
-            return appendLine(count, "    ", key, objOf1);
-        } else {
-            return appendLine(count, "  - ", key, objOf1)
-                    + appendLine(count, "  + ", key, objOf2);
-        }
-    }
-
-    public static boolean areEqual(Object obj1, Object obj2) {
-        return (obj1 == null || obj2 == null) ? obj1 == obj2 : obj1.equals(obj2);
-    }
-
-    public static String appendLine(int count, String prefix, String key, Object value) {
+    private static String appendLine(int count, String prefix, String key, Object value) {
         String space = " ";
         return space.repeat(count) + prefix + key + ": " + value + "\n";
     }
