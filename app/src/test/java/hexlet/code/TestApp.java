@@ -1,67 +1,75 @@
 package hexlet.code;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TestApp {
+    private App app;
+    private static final String DEFAULT_FORMAT = "stylish";
+    private static final String FILE1_PATH = "file1.json";
+    private static final String FILE2_PATH = "file2.json";
+
+    @BeforeEach
+    void setUp() {
+        app = new App();
+    }
 
     @Test
-    void testSuccessfulExecution() {
-        App app = new App();
-        app.setFilepath1("file1.json");
-        app.setFilepath2("file2.json");
-        app.setFormat("stylish");
+    void testSuccessfulExecutionWithExistingFiles() {
+        app.setFilepath1(FILE1_PATH);
+        app.setFilepath2(FILE2_PATH);
+        app.setFormat(DEFAULT_FORMAT);
 
-        String result = app.call();
-        assertNotNull(result);
-        assertFalse(result.isEmpty());
+        assertEquals(App.SUCCESS_EXIT_CODE, app.call());
     }
 
     @Test
     void testDifferentFormats() {
-        App app = new App();
-        app.setFilepath1("file1.json");
-        app.setFilepath2("file2.json");
+        app.setFilepath1(FILE1_PATH);
+        app.setFilepath2(FILE2_PATH);
+
         app.setFormat("stylish");
-        String stylishResult = app.call();
-        assertNotNull(stylishResult);
+        assertEquals(App.SUCCESS_EXIT_CODE, app.call());
 
         app.setFormat("plain");
-        String plainResult = app.call();
-        assertNotNull(plainResult);
+        assertEquals(App.SUCCESS_EXIT_CODE, app.call());
 
         app.setFormat("json");
-        String jsonResult = app.call();
-        assertNotNull(jsonResult);
-
-        assertNotEquals(stylishResult, plainResult);
-        assertNotEquals(plainResult, jsonResult);
-        assertNotEquals(stylishResult, jsonResult);
+        assertEquals(App.SUCCESS_EXIT_CODE, app.call());
     }
 
     @Test
-    void testInvalidFormat() {
-        App app = new App();
-        app.setFilepath1("file1.json");
-        app.setFilepath2("file2.json");
-        app.setFormat("invalid-format");
-
-        String result = app.call();
-        assertTrue(result.isEmpty());
+    void testMissingFirstFile() {
+        app.setFilepath2(FILE2_PATH);
+        assertEquals(App.ERROR_EXIT_CODE, app.call());
     }
 
     @Test
-    void testMissingFile() {
-        App app = new App();
-        app.setFilepath1("nonexistent-file.json");
-        app.setFilepath2("file2.json");
-        app.setFormat("stylish");
+    void testMissingSecondFile() {
+        app.setFilepath1(FILE1_PATH);
+        assertEquals(App.ERROR_EXIT_CODE, app.call());
+    }
 
-        String result = app.call();
-        assertTrue(result.isEmpty());
+    @Test
+    void testInvalidFilePath() {
+        app.setFilepath1("invalid/path/file.json");
+        app.setFilepath2(FILE2_PATH);
+        assertEquals(App.ERROR_EXIT_CODE, app.call());
+    }
+
+    @Test
+    void testEmptyFilePath() {
+        app.setFilepath1("");
+        app.setFilepath2(FILE2_PATH);
+        assertEquals(App.ERROR_EXIT_CODE, app.call());
+    }
+
+    @Test
+    void testNullFilePath() {
+        app.setFilepath1(null);
+        app.setFilepath2(FILE2_PATH);
+        assertEquals(App.ERROR_EXIT_CODE, app.call());
     }
 }

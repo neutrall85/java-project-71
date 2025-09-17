@@ -21,6 +21,8 @@ public final class Plain {
                 case "deleted":
                     result.append(removedProperty(key));
                     break;
+                case "unchanged":
+                    break;
                 case "changed":
                     result.append(updatedProperty(
                             key,
@@ -29,10 +31,9 @@ public final class Plain {
                     ));
                     break;
                 default:
-                    break;
+                    return ("Unknown type: '" + type + "'");
             }
         }
-
         return result.toString().trim();
     }
 

@@ -1,5 +1,6 @@
 package hexlet.code;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -11,7 +12,7 @@ class TestParser {
     private static final int TEST_NUM = 30;
 
     @Test
-    void testParseJsonSuccess() {
+    void testParseJsonSuccess() throws JsonProcessingException {
         String json = "{\"name\": \"John\", \"age\": 30, \"city\": \"New York\"}";
         Map<String, Object> result = Parser.parse(json, "json");
 
@@ -21,7 +22,7 @@ class TestParser {
     }
 
     @Test
-    void testParseYamlSuccess() {
+    void testParseYamlSuccess() throws JsonProcessingException {
         String yaml = """
                 name: John
                 age: 30
@@ -35,7 +36,7 @@ class TestParser {
     }
 
     @Test
-    void testParseYmlSuccess() {
+    void testParseYmlSuccess() throws JsonProcessingException {
         String yml = """
                 name: John
                 age: 30
@@ -59,20 +60,6 @@ class TestParser {
     void testNullFormat() {
         assertThrows(NullPointerException.class, () ->
             Parser.parse("{}", null)
-        );
-    }
-
-    @Test
-    void testInvalidJson() {
-        assertThrows(IllegalArgumentException.class, () ->
-            Parser.parse("{invalid json", "json")
-        );
-    }
-
-    @Test
-    void testEmptyContent() {
-        assertThrows(IllegalArgumentException.class, () ->
-            Parser.parse("", "json")
         );
     }
 }

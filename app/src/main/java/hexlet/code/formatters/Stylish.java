@@ -7,10 +7,9 @@ public final class Stylish {
 
     private Stylish() { }
 
-    public static String createStylish(List<Map<String, Object>> diff, int count) {
+    public static String createStylish(List<Map<String, Object>> diff) {
         StringBuilder result = new StringBuilder();
-        String space = " ";
-        result.append(space.repeat(count)).append("{\n");
+        result.append("{\n");
 
         for (Map<String, Object> entry : diff) {
             String key = (String) entry.get("key");
@@ -21,30 +20,30 @@ public final class Stylish {
 
             switch (type) {
                 case "added":
-                    result.append(appendLine(count, "  + ", key, value));
+                    result.append(appendLine("  + ", key, value));
                     break;
                 case "deleted":
-                    result.append(appendLine(count, "  - ", key, value));
+                    result.append(appendLine("  - ", key, value));
                     break;
                 case "unchanged":
-                    result.append(appendLine(count, "    ", key, value));
+                    result.append(appendLine("    ", key, value));
                     break;
                 case "changed":
-                    result.append(appendLine(count, "  - ", key, value1))
-                            .append(appendLine(count, "  + ", key, value2));
+                    result.append(appendLine("  - ", key, value1))
+                            .append(appendLine("  + ", key, value2));
                     break;
                 default:
-                    throw new IllegalArgumentException("Неизвестный тип изменения: " + type);
-
+                    result.append("!!Ошибка: неизвестный тип изменения '")
+                            .append(type)
+                            .append("'!!\n");
             }
         }
 
-        result.append(space.repeat(count)).append("}");
+        result.append("}");
         return result.toString();
     }
 
-    public static String appendLine(int count, String prefix, String key, Object value) {
-        String space = " ";
-        return space.repeat(count) + prefix + key + ": " + value + "\n";
+    public static String appendLine(String prefix, String key, Object value) {
+        return prefix + key + ": " + value + "\n";
     }
 }

@@ -1,5 +1,6 @@
 package hexlet.code;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
@@ -12,14 +13,9 @@ public final class Parser {
 
     private Parser() { }
 
-    public static Map<String, Object> parse(String content, String format) throws IllegalArgumentException {
+    public static Map<String, Object> parse(String content, String format) throws JsonProcessingException {
         ObjectMapper mapper = getMapper(format);
-
-        try {
-            return mapper.readValue(content, new TypeReference<>() { });
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Ошибка при парсинге данных: " + e.getMessage(), e);
-        }
+        return mapper.readValue(content, new TypeReference<>() { });
     }
 
     private static ObjectMapper getMapper(String format) {

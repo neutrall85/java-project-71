@@ -6,6 +6,7 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
+
 import java.util.concurrent.Callable;
 
 
@@ -17,7 +18,9 @@ import static hexlet.code.Differ.generate;
         description = "Compares two configuration files and shows a difference")
 @Getter
 @Setter
-public final class App implements Callable<String> {
+public final class App implements Callable<Integer> {
+    static final int SUCCESS_EXIT_CODE = 0;
+    static final int ERROR_EXIT_CODE = 1;
 
     @Parameters(
             index = "0",
@@ -38,15 +41,15 @@ public final class App implements Callable<String> {
     private String format;
 
     @Override
-    public String call() {
+    public Integer call() {
         try {
             String result = generate(filepath1, filepath2, format);
             System.out.println(result);
-            return result;
         } catch (Exception e) {
-            System.err.println("Ошибка при выполнении: " + e.getMessage());
-            return "";
+            System.err.println(e.getMessage());
+            return ERROR_EXIT_CODE;
         }
+        return SUCCESS_EXIT_CODE;
     }
 
     public static void main(String[] args) {

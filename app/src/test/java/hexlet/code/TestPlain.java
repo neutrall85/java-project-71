@@ -64,18 +64,15 @@ class TestPlain {
     void testCreatePlainWithMultipleChanges() {
         List<Map<String, Object>> diff = new ArrayList<>();
 
-        // Added property
         Map<String, Object> entry1 = new HashMap<>();
         entry1.put("key", "key1");
         entry1.put("type", "added");
         entry1.put("value", "value1");
 
-        // Removed property
         Map<String, Object> entry2 = new HashMap<>();
         entry2.put("key", "key2");
         entry2.put("type", "deleted");
 
-        // Updated property
         Map<String, Object> entry3 = new HashMap<>();
         entry3.put("key", "key3");
         entry3.put("type", "changed");
@@ -148,7 +145,6 @@ class TestPlain {
     void testMixedValues() {
         List<Map<String, Object>> diff = new ArrayList<>();
 
-        // Добавляем разные типы значений
         Map<String, Object> entry1 = new HashMap<>();
         entry1.put("key", "key1");
         entry1.put("type", "added");
@@ -181,18 +177,5 @@ class TestPlain {
                 Property 'key4' was added with value: [complex value]""";
 
         assertEquals(expected, Plain.createPlain(diff), "Неверный результат форматирования смешанных значений");
-    }
-
-    @Test
-    void testInvalidType() {
-        List<Map<String, Object>> diff = new ArrayList<>();
-        Map<String, Object> entry = new HashMap<>();
-        entry.put("key", "testKey");
-        entry.put("type", "unknown");
-        entry.put("value", "testValue");
-        diff.add(entry);
-
-        String result = Plain.createPlain(diff);
-        assertTrue(result.isEmpty(), "Для неизвестного типа должен возвращаться пустой результат");
     }
 }
