@@ -33,7 +33,7 @@ public final class Stylish {
                             .append(appendLine("  + ", key, value2));
                     break;
                 default:
-                    throw new IllegalArgumentException("Unknown type: " + type);
+                    throw new IllegalArgumentException("Неизвестный тип: " + type);
             }
         }
 

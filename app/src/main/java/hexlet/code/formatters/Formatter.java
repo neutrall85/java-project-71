@@ -15,7 +15,7 @@ public final class Formatter {
             case "plain" -> Plain.createPlain(diff);
             case "stylish" -> Stylish.createStylish(diff);
             case "json" -> Json.createJson(diff);
-            default -> throw new IllegalArgumentException("Unknown format: " + formatName);
+            default -> throw new IllegalArgumentException("Неизвестный формат: " + formatName);
         };
     }
 }

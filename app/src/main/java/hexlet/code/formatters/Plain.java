@@ -31,7 +31,7 @@ public final class Plain {
                     ));
                     break;
                 default:
-                    throw new IllegalArgumentException("Unknown type: " + type);
+                    throw new IllegalArgumentException("неизвестный тип: " + type);
             }
         }
         return result.toString().trim();
