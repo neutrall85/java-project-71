@@ -33,9 +33,7 @@ public final class Stylish {
                             .append(appendLine("  + ", key, value2));
                     break;
                 default:
-                    result.append("!!Ошибка: неизвестный тип изменения '")
-                            .append(type)
-                            .append("'!!\n");
+                    throw new IllegalArgumentException("Unknown type: " + type);
             }
         }
 
